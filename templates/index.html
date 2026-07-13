@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Meteo predictor</title>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Météo Predictor</h1>
+    <button type="button" onclick="lancerEntrainement()">Entraîner le modèle</button>
+    <button type="button" onclick="donnees()">Importer les données Meteostat</button>
+    <div id="resultat_donnees"></div>
+    <button type="button" onclick="lancerPrediction()">Lancer la prédiction</button>
+    <div id="resultat_prediction"></div>
+    <canvas id="graphique_loss" width="600" height="300"></canvas>
+</body>
+</html>
