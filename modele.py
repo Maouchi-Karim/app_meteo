@@ -5,7 +5,6 @@ from random import random, randint
 from dataframe import df, temp_colonne
 from datetime import datetime, timedelta
 import meteostat as ms
-import matplotlib.pyplot as plt
 
 
 def sigmoide(x):
