@@ -9,7 +9,7 @@ app = Flask(__name__)
 # --- Préparation des données ---
 
 alpha = 0.01
-nb_epochs = 2
+nb_epochs = 2000
 lines = len(df)
 lines_train = int(lines*0.8)
 
