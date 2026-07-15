@@ -2,6 +2,354 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Météo Predictor · Nantes</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --bg: #f5f5f3;
+            --surface: #ffffff;
+            --surface-2: #f9f9f8;
+            --border: rgba(0,0,0,0.1);
+            --border-strong: rgba(0,0,0,0.18);
+            --text-primary: #1a1a18;
+            --text-secondary: #6b6b67;
+            --text-muted: #9d9d98;
+            --accent: #378ADD;
+            --accent-hover: #2a6fb8;
+            --accent-bg: #e6f1fb;
+            --accent-text: #185fa5;
+            --success: #3B6D11;
+            --success-bg: #eaf3de;
+            --danger: #A32D2D;
+            --danger-bg: #fcebeb;
+            --warning-text: #854F0B;
+            --warning-bg: #faeeda;
+            --radius: 8px;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1a1a18;
+                --surface: #2c2c2a;
+                --surface-2: #232321;
+                --border: rgba(255,255,255,0.1);
+                --border-strong: rgba(255,255,255,0.18);
+                --text-primary: #f0efea;
+                --text-secondary: #a8a8a2;
+                --text-muted: #6b6b67;
+                --accent: #5aa0e8;
+                --accent-hover: #378ADD;
+                --accent-bg: #042C53;
+                --accent-text: #85B7EB;
+                --success: #97C459;
+                --success-bg: #173404;
+                --danger: #F09595;
+                --danger-bg: #501313;
+                --warning-text: #EF9F27;
+                --warning-bg: #412402;
+            }
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 660px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--text-primary);
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .header h1 span {
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .step {
+            background: var(--surface);
+            border: 0.5px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            margin-bottom: 8px;
+        }
+
+        .step-num {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--accent-bg);
+            color: var(--accent-text);
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .step-desc {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 14px;
+            font-size: 13px;
+            font-weight: 500;
+            border: 0.5px solid var(--border-strong);
+            border-radius: var(--radius);
+            background: transparent;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: background 0.12s;
+            font-family: inherit;
+        }
+
+        .btn:hover:not(:disabled) { background: var(--surface-2); }
+        .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+
+        .status {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            min-height: 16px;
+        }
+
+        .spinner {
+            width: 13px;
+            height: 13px;
+            border: 1.5px solid currentColor;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+
+        .spinner.active { display: inline-block; }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .result-box {
+            margin-top: 12px;
+            background: var(--surface-2);
+            border: 0.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 12px;
+            display: none;
+        }
+
+        .result-box.visible { display: block; }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .data-item {
+            font-size: 12px;
+        }
+
+        .data-label {
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .data-value {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .warning-strip {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--warning-text);
+            background: var(--warning-bg);
+            border-radius: var(--radius);
+            padding: 7px 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .metric {
+            background: var(--surface);
+            border: 0.5px solid var(--border);
+            border-radius: var(--radius);
+            padding: 10px 12px;
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 22px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .metric-value.good { color: var(--success); }
+        .metric-value.bad { color: var(--danger); }
+
+        .metric.full { grid-column: 1 / -1; }
+
+        .loss-wrapper {
+            margin-top: 14px;
+            display: none;
+        }
+
+        .loss-wrapper.visible { display: block; }
+
+        .chart-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Météo Predictor <span>Nantes · Station 07222</span></h1>
+            <p>Réseau de neurones entraîné from scratch avec NumPy · Prédiction de la température horaire</p>
+        </div>
+
+        <div class="steps">
+
+            <!-- Étape 1 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-num">1</div>
+                    <div class="step-title">Entraîner le modèle</div>
+                </div>
+                <p class="step-desc">Lance la descente de gradient sur les données historiques et affiche la courbe de convergence de la loss.</p>
+                <button class="btn btn-primary" onclick="lancerEntrainement()" id="btn-train">
+                    <span class="spinner" id="spin-train"></span>
+                    <i class="ti ti-player-play" aria-hidden="true"></i>
+                    Lancer l'entraînement
+                </button>
+                <p class="status" id="status-train"></p>
+                <div class="loss-wrapper" id="loss-wrapper">
+                    <p class="chart-label">Courbe de loss (MSE) par epoch</p>
+                    <canvas id="graphique_loss" height="180"></canvas>
+                </div>
+            </div>
+
+            <!-- Étape 2 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-num">2</div>
+                    <div class="step-title">Importer les données récentes</div>
+                </div>
+                <p class="step-desc">Récupère le dernier relevé horaire disponible depuis Meteostat pour la station de Nantes.</p>
+                <button class="btn" onclick="donnees()" id="btn-import">
+                    <span class="spinner" id="spin-import"></span>
+                    <i class="ti ti-cloud-download" aria-hidden="true"></i>
+                    Importer depuis Meteostat
+                </button>
+                <p class="status" id="status-import"></p>
+                <div class="result-box" id="resultat_donnees"></div>
+            </div>
+
+            <!-- Étape 3 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-num">3</div>
+                    <div class="step-title">Prédire la température</div>
+                </div>
+                <p class="step-desc">Effectue le forward pass sur le dernier relevé importé et compare la prédiction à la valeur réelle connue.</p>
+                <button class="btn" onclick="lancerPrediction()" id="btn-predict">
+                    <span class="spinner" id="spin-predict"></span>
+                    <i class="ti ti-temperature" aria-hidden="true"></i>
+                    Lancer la prédiction
+                </button>
+                <p class="status" id="status-predict"></p>
+                <div class="result-box" id="resultat_prediction"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
+
+<!--
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
     <title>Meteo predictor</title>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -16,3 +364,5 @@
     <canvas id="graphique_loss" width="600" height="300"></canvas>
 </body>
 </html>
+
+-->
