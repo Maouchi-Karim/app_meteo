@@ -76,6 +76,15 @@ def prediction():
         "temp_reelle": float(temp_reelle)
     })
 
+
+from flask import send_file
+
+@app.route('/download/<filename>')
+def download_file(filename):
+    fichiers_autorises = ['M1.npy', 'M2.npy', 'M3.npy', 'B1.npy', 'B2.npy', 'B3.npy']
+    if filename in fichiers_autorises:
+        return send_file(filename, as_attachment=True)
+    return "Fichier non autorisé", 403
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
