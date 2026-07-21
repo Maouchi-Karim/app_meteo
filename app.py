@@ -6,7 +6,7 @@ from dataframe import df, temp_colonne
 
 app = Flask(__name__)
 
-# --- Préparation des données ---
+#Préparation des données
 
 alpha = 0.01
 nb_epochs = 2
@@ -21,7 +21,7 @@ Y = temp_colonne.head(lines_train).values
 Y = (Y - mu_Y) / sigma_Y
 X_test = df.iloc[lines_train:].values
 
-# --- Chargement ou création des matrices ---
+#Chargement ou création des matrices
 if os.path.exists("M1.npy"):
     M1 = np.load("M1.npy")
     M2 = np.load("M2.npy")
@@ -32,7 +32,7 @@ if os.path.exists("M1.npy"):
 else:
     M1, M2, M3, B1, B2, B3 = cree_matrices()
 
-# --- Routes Flask ---
+#Routes Flask
 @app.route('/')
 def accueil():
     return render_template('index.html')
