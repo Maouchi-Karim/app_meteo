@@ -198,7 +198,7 @@ def preparer_ligne(ligne):
     wpgt_norm = (ligne['wpgt'] - stats['wpgt_mean']) / stats['wpgt_std']
     cldc_norm = (ligne['cldc'] - stats['cldc_mean']) / stats['cldc_std']
     coco_norm = (ligne['coco'] - stats['coco_mean']) / stats['coco_std']
-    tsun_norm = (ligne['tsun'] - stats['tsun_mean']) / stats['tsun_std']
+    #tsun_norm = (ligne['tsun'] - stats['tsun_mean']) / stats['tsun_std']
     #temp_pre_norm = (ligne['temp_pre'] - stats['temp_pre_mean']) / stats['temp_pre_std']
 
     # reconstruction dans le bon ordre (identique à dataframe.py)
