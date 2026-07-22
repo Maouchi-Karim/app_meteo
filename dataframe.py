@@ -28,7 +28,7 @@ stats = {
     'wpgt_mean': np.mean(df['wpgt']), 'wpgt_std': np.std(df['wpgt']),
     'cldc_mean': np.mean(df['cldc']), 'cldc_std': np.std(df['cldc']),
     'coco_mean': np.mean(df['coco']), 'coco_std': np.std(df['coco']),
-    'tsun_mean': np.mean(df['tsun']), 'tsun_std': np.std(df['tsun']),
+    #'tsun_mean': np.mean(df['tsun']), 'tsun_std': np.std(df['tsun']),
     #'temp_pre_mean': np.mean(df['temp_pre']), 'temp_pre_std': np.std(df['temp_pre']),
 }
 np.save('stats_normalisation.npy', stats)
@@ -95,17 +95,17 @@ df['coco'] = coco_colonne
 temp_pre_colonne = (temp_pre_colonne - np.mean(temp_pre_colonne))/np.std(temp_pre_colonne)
 df['temp_pre'] = temp_pre_colonne"""
 
-heure_colonne = pd.to_datetime(df['time']).dt.hour
-heure_cos = np.cos(heure_colonne * 2*np.pi/24)
-heure_sin = np.sin(heure_colonne * 2*np.pi/24)
-df['heure_cos'] = heure_cos
-df['heure_sin'] = heure_sin
+# heure_colonne = pd.to_datetime(df['time']).dt.hour
+# heure_cos = np.cos(heure_colonne * 2*np.pi/24)
+# heure_sin = np.sin(heure_colonne * 2*np.pi/24)
+# df['heure_cos'] = heure_cos
+# df['heure_sin'] = heure_sin
 
 tsun_colonne = df['tsun'].astype(float)
 tsun_colonne = (tsun_colonne - np.mean(tsun_colonne))/np.std(tsun_colonne)
 df['tsun'] = tsun_colonne
 
-#df = df.drop('tsun', axis=1)
+df = df.drop('tsun', axis=1)
 
 
 df.interpolate(inplace=True)

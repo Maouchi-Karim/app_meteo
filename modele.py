@@ -35,29 +35,25 @@ def cree_matrices():
 
     np.random.seed(8)
 
-    B1 = np.zeros((66))
-    B2 = np.zeros((22))
-    B3 = np.zeros((1))
+    M1 = np.random.randn(11, 32) * np.sqrt(2 / 11)
+    M2 = np.random.randn(32, 16) * np.sqrt(2 / 32)
+    M3 = np.random.randn(16,) * np.sqrt(2 / 16)
 
-    M1 = np.random.randn(14, 66) * np.sqrt(2 / 14)
-    M2 = np.random.randn(66, 22) * np.sqrt(2 / 66)
-    M3 = np.random.randn(22,) * np.sqrt(2 / 22)
-
-    """for i in range(14):
-        for j in range(22):
+    """for i in range(11):
+        for j in range(16):
             M1[i,j] = randint(-1, 1)*random()
 
-    for i in range(22):
-        for j in range(22):
+    for i in range(16):
+        for j in range(16):
             M2[i,j] = randint(-1, 1)*random()
 
-    for i in range(22):
+    for i in range(16):
             M3[i] = randint(-1, 1)*random()"""
 
 
-    B1 = np.random.randn(66) * np.sqrt(2/14)
-    B2 = np.random.randn(22) * np.sqrt(2/66)
-    B3 = np.random.randn() * np.sqrt(2/22)
+    B1 = np.random.randn(32) * np.sqrt(2/11)
+    B2 = np.random.randn(16) * np.sqrt(2/32)
+    B3 = np.random.randn() * np.sqrt(2/16)
 
     np.save('M1.npy',M1)
     np.save('M2.npy', M2)
@@ -121,11 +117,11 @@ def entrainer(X, Y, M1, M2, M3, B1, B2, B3, alpha, nb_epochs):
         dB1 = np.sum(dZ1, axis = 0)
 
         """
-        print(dM1.shape, M1.shape)  # doivent être identiques : (14, 66)
-        print(dM2.shape, M2.shape)  # (66, 22)
-        print(dM3.shape, M3.shape)  # (22,)
-        print(dB1.shape, B1.shape)  # (66,)
-        print(dB2.shape, B2.shape)  # (22,)
+        print(dM1.shape, M1.shape)  # doivent être identiques : (11, 32)
+        print(dM2.shape, M2.shape)  # (32, 16)
+        print(dM3.shape, M3.shape)  # (16,)
+        print(dB1.shape, B1.shape)  # (32,)
+        print(dB2.shape, B2.shape)  # (16,)
         """
 
         M1 = M1 - alpha * dM1
@@ -219,9 +215,9 @@ def preparer_ligne(ligne):
         'cldc': cldc_norm,
         'coco': coco_norm,
         #'temp_pre':temp_pre_norm,
-        'heure_cos': heure_cos,
-        'heure_sin': heure_sin,
-        'tsun': tsun_norm,
+        #'heure_cos': heure_cos,
+        #'heure_sin': heure_sin,
+        #'tsun': tsun_norm,
     })
 
     return ligne_finale.values.reshape(1, -1), temp_reelle
