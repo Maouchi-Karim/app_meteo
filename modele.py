@@ -140,7 +140,7 @@ def entrainer(X, Y, M1, M2, M3, B1, B2, B3, alpha, nb_epochs):
 
 def donnees_recentes():
 
-    station = ms.stations.meta('07157')
+    station = ms.stations.meta('07222')
 
     fin = datetime.now()
     debut = fin - timedelta(hours=48)
